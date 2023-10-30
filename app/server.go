@@ -23,7 +23,7 @@ func main() {
 	}
 	defer conn.Close()
 
-	data := make([]byte, 10000)
+	var data []byte
 	conn.Read(data)
 	fmt.Println("Receive: ", string(data))
 
