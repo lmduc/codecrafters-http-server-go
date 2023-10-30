@@ -23,6 +23,10 @@ func main() {
 	}
 	defer conn.Close()
 
+	data := make([]byte, 10000)
+	conn.Read(data)
+	fmt.Println("Receive: ", string(data))
+
 	_, err = conn.Write([]byte("HTTP/1.1 200 OK\r\n\r\n"))
 	if err != nil {
 		fmt.Println("Error writing response: ", err.Error())
