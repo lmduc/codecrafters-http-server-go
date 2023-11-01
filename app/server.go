@@ -25,8 +25,6 @@ func main() {
 
 	request := Request{}
 	request.Read(conn)
-	fmt.Println("Receive: ", string(request.body))
-	fmt.Println("Path: ", request.Path())
 
 	if request.Path() == "/" {
 		_, err = conn.Write([]byte("HTTP/1.1 200 OK\r\n\r\n"))
