@@ -23,9 +23,9 @@ func main() {
 	}
 	defer conn.Close()
 
-	request := make([]byte, 1024)
-	conn.Read(request)
-	fmt.Println("Receive: ", string(request))
+	request := Request{}
+	request.Read(conn)
+	fmt.Println("Receive: ", string(request.body))
 
 	_, err = conn.Write([]byte("HTTP/1.1 200 OK\r\n\r\n"))
 	if err != nil {
