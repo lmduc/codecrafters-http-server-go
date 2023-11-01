@@ -24,10 +24,14 @@ func main() {
 	defer conn.Close()
 
 	request := Request{}
-	request.Read(conn)
 	fmt.Println("Receive: ", string(request.body))
 
-	_, err = conn.Write([]byte("HTTP/1.1 200 OK\r\n\r\n"))
+	if request.Path() == "/" {
+		_, err = conn.Write([]byte("HTTP/1.1 200 OK\r\n\r\n"))
+	} else {
+		_, err = conn.Write([]byte("HTTP/1.1 404 OK\r\n\r\n"))
+	}
+
 	if err != nil {
 		fmt.Println("Error writing response: ", err.Error())
 		os.Exit(1)
