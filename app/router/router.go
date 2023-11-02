@@ -29,4 +29,8 @@ func (r *Router) NotFoundHandler(handler port.Handler) *Router {
 	return r
 }
 
-func NewRouter() *Router { return &Router{} }
+func NewRouter() *Router {
+	return &Router{
+		pathToHandler: make(map[port.PathMatcher]port.Handler),
+	}
+}
