@@ -4,6 +4,11 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"regexp"
+)
+
+var (
+	echoPathRegex = regexp.MustCompile(`/echo/(.+)`)
 )
 
 func main() {
@@ -26,11 +31,16 @@ func main() {
 	request := Request{}
 	request.Read(conn)
 
-	if request.Path() == "/" {
-		_, err = conn.Write([]byte("HTTP/1.1 200 OK\r\n\r\n"))
+	response := Response{}
+
+	if echoPathRegex.MatchString(request.Path()) {
+		text := echoPathRegex.FindString(request.Path())
+		response.StatusCode(200).ContentType("text/plain").Body([]byte(text))
 	} else {
-		_, err = conn.Write([]byte("HTTP/1.1 404 OK\r\n\r\n"))
+		response.StatusCode(404)
 	}
+
+	response.Write(conn)
 
 	if err != nil {
 		fmt.Println("Error writing response: ", err.Error())
