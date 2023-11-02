@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	headerRegexp = regexp.MustCompile(`[^:]+:\s+([^\s]*)`)
+	headerRegexp = regexp.MustCompile(`([^:]+):\s+([^\s]*)`)
 )
 
 type HTTPRequest struct {
