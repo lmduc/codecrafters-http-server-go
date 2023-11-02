@@ -39,29 +39,30 @@ func main() {
 	}
 	defer l.Close()
 
-	conn, err := l.Accept()
-	if err != nil {
-		fmt.Println("Error accepting connection: ", err.Error())
-		os.Exit(1)
-	}
-	defer conn.Close()
+	for {
+		conn, err := l.Accept()
+		if err != nil {
+			fmt.Println("Error accepting connection: ", err.Error())
+			os.Exit(1)
+		}
 
-	request := request.NewHTTPRequest()
-	if err := request.Read(conn); err != nil {
-		fmt.Println("Error when reading request: ", err.Error())
-		os.Exit(1)
-	}
+		request := request.NewHTTPRequest()
+		if err := request.Read(conn); err != nil {
+			fmt.Println("Error when reading request: ", err.Error())
+			os.Exit(1)
+		}
 
-	response, err := r.Handle(request)
+		response, err := r.Handle(request)
 
-	if err != nil {
-		fmt.Println("Error handling request: ", err.Error())
-	}
+		if err != nil {
+			fmt.Println("Error handling request: ", err.Error())
+		}
 
-	err = response.Write(conn)
+		err = response.Write(conn)
 
-	if err != nil {
-		fmt.Println("Error writing response: ", err.Error())
-		os.Exit(1)
+		if err != nil {
+			fmt.Println("Error writing response: ", err.Error())
+			os.Exit(1)
+		}
 	}
 }
