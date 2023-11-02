@@ -22,7 +22,7 @@ func (r *HTTPRequest) readHeaders(data []byte) error {
 	fmt.Println("inside read header")
 	r.headers = make(map[string]string)
 	fmt.Println("number: ", len(strings.Split(string(data), "\n\n")))
-	headerLines := strings.Split(string(data), "\n\n")[1]
+	headerLines := strings.Split(string(data), "\n\n")[0]
 	fmt.Println("header lines: ", headerLines)
 	for _, line := range strings.Split(headerLines, "\n") {
 		fmt.Println("line: ", line)
