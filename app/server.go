@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net"
 	"os"
-	"regexp"
 
 	"github.com/codecrafters-io/http-server-starter-go/app/handler"
 	"github.com/codecrafters-io/http-server-starter-go/app/request"
@@ -12,15 +11,16 @@ import (
 )
 
 var (
-	echoPathRegex = regexp.MustCompile(`/echo/(.+)`)
-
 	notFoundHandler = handler.NewNotFoundHandler()
+	homeHandler     = handler.NewHomeHandler()
 
 	r = router.NewRouter()
 )
 
 func init() {
-	r.NotFoundHandler(notFoundHandler)
+	r.
+		NotFoundHandler(notFoundHandler).
+		Register(router.NewExactMatcher("/"), homeHandler)
 }
 
 func main() {
