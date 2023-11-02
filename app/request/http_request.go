@@ -13,14 +13,14 @@ type HTTPRequest struct {
 }
 
 func (r *HTTPRequest) readStatusLine(data []byte) error {
-	r.statusLine = strings.Split(string(r.body), "\n")[0]
+	r.statusLine = strings.Split(string(data), "\n")[0]
 	fmt.Println("status line: ", r.statusLine)
 	return nil
 }
 
 func (r *HTTPRequest) readHeaders(data []byte) error {
 	r.headers = make(map[string]string)
-	headerLines := strings.Split(string(r.body), "\n\n")[1]
+	headerLines := strings.Split(string(data), "\n\n")[1]
 	for _, line := range strings.Split(headerLines, "\n") {
 		kvs := strings.Split(line, ": ")
 		r.headers[kvs[0]] = kvs[1]
