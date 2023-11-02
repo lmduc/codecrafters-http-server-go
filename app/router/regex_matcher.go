@@ -1,7 +1,6 @@
 package router
 
 import (
-	"fmt"
 	"regexp"
 )
 
@@ -13,12 +12,10 @@ func (r *RegexMatcher) Match(path string) bool {
 	return r.r.MatchString(path)
 }
 
-func (r *RegexMatcher) FindMatch(path string) string {
-	fmt.Println("Inside regex: ", path)
-	return r.r.FindString(path)
+func (r *RegexMatcher) FindMatches(path string) []string {
+	return r.r.FindStringSubmatch(path)
 }
 
 func NewRegexMatcher(re string) *RegexMatcher {
-	fmt.Println("re is: ", re)
 	return &RegexMatcher{regexp.MustCompile(re)}
 }
