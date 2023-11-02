@@ -5,17 +5,17 @@ import (
 	"github.com/codecrafters-io/http-server-starter-go/app/response"
 )
 
-type NotFoundHandler struct {
+type NotFound struct {
 	response *response.Response
 }
 
-func (p *NotFoundHandler) Handle(_ port.Request) (port.Response, error) {
+func (p *NotFound) Handle(_ port.Request) (port.Response, error) {
 	return p.response, nil
 }
 
-func NewNotFoundHandler() *NotFoundHandler {
+func NewNotFound() *NotFound {
 	resp := response.NewResponse("")
 	resp.StatusCode(404)
 
-	return &NotFoundHandler{resp}
+	return &NotFound{resp}
 }

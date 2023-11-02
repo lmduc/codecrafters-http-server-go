@@ -11,8 +11,8 @@ import (
 )
 
 var (
-	notFoundHandler = handler.NewNotFoundHandler()
-	homeHandler     = handler.NewHomeHandler()
+	notFoundHandler = handler.NewNotFound()
+	homeHandler     = handler.NewHome()
 
 	r = router.NewRouter()
 )
