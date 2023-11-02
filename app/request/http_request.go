@@ -36,7 +36,6 @@ func (r *HTTPRequest) Read(conn net.Conn) error {
 	if _, err := conn.Read(data); err != nil {
 		return err
 	}
-	fmt.Println("data: ", data)
 
 	if err := r.readStatusLine(data); err != nil {
 		return err

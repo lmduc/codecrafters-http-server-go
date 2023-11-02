@@ -47,7 +47,10 @@ func main() {
 	defer conn.Close()
 
 	request := request.NewHTTPRequest()
-	request.Read(conn)
+	if err := request.Read(conn); err != nil {
+		fmt.Println("Error when reading request: ", err.Error())
+		os.Exit(1)
+	}
 
 	response, err := r.Handle(request)
 
