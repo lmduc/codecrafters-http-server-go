@@ -13,9 +13,10 @@ import (
 var (
 	echoMatcher = router.NewRegexMatcher(`/echo/(.+)`)
 
-	notFoundHandler = handler.NewNotFound()
-	homeHandler     = handler.NewHome()
-	echoHandler     = handler.NewEcho(echoMatcher)
+	notFoundHandler  = handler.NewNotFound()
+	homeHandler      = handler.NewHome()
+	echoHandler      = handler.NewEcho(echoMatcher)
+	userAgentHandler = handler.NewUserAgent()
 
 	r = router.NewRouter()
 )
@@ -24,7 +25,8 @@ func init() {
 	r.
 		NotFoundHandler(notFoundHandler).
 		Register(router.NewExactMatcher("/"), homeHandler).
-		Register(echoMatcher, echoHandler)
+		Register(echoMatcher, echoHandler).
+		Register(router.NewExactMatcher("/user-agent"), userAgentHandler)
 }
 
 func main() {

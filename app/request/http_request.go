@@ -1,6 +1,7 @@
 package request
 
 import (
+	"fmt"
 	"net"
 	"strings"
 )
@@ -13,6 +14,7 @@ type HTTPRequest struct {
 
 func (r *HTTPRequest) readStatusLine(data []byte) error {
 	r.statusLine = strings.Split(string(r.body), "\n")[0]
+	fmt.Println("status line: ", r.statusLine)
 	return nil
 }
 
@@ -23,6 +25,7 @@ func (r *HTTPRequest) readHeaders(data []byte) error {
 		kvs := strings.Split(line, ": ")
 		r.headers[kvs[0]] = kvs[1]
 	}
+	fmt.Println("headers: ", r.headers)
 	return nil
 }
 
@@ -31,6 +34,7 @@ func (r *HTTPRequest) Read(conn net.Conn) error {
 	if _, err := conn.Read(data); err != nil {
 		return err
 	}
+	fmt.Println("data: ", data)
 
 	if err := r.readStatusLine(data); err != nil {
 		return err
