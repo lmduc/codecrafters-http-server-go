@@ -23,7 +23,9 @@ func (r *HTTPRequest) readHeaders(data []byte) error {
 	for _, line := range strings.Split(headerLines, "\n")[1:] {
 		fmt.Println("line: ", line)
 		kvs := strings.Split(line, ": ")
-		r.headers[kvs[0]] = kvs[1]
+		if len(kvs) == 2 {
+			r.headers[kvs[0]] = kvs[1]
+		}
 	}
 	return nil
 }
