@@ -1,4 +1,4 @@
-package main
+package response
 
 import (
 	"fmt"
@@ -33,13 +33,14 @@ func (r *Response) StatusCode(statusCode int) *Response {
 	return r
 }
 
-func (r *Response) ContentType(contentType string) *Response {
-	r.contentType = contentType
-	return r
-}
-
 func (r *Response) Body(body []byte) *Response {
 	r.body = body
 	r.contentLength = len(body)
 	return r
+}
+
+func NewResponse(contentType string) *Response {
+	return &Response{
+		contentType: contentType,
+	}
 }

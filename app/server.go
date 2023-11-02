@@ -5,11 +5,23 @@ import (
 	"net"
 	"os"
 	"regexp"
+
+	"github.com/codecrafters-io/http-server-starter-go/app/handler"
+	"github.com/codecrafters-io/http-server-starter-go/app/request"
+	"github.com/codecrafters-io/http-server-starter-go/app/router"
 )
 
 var (
 	echoPathRegex = regexp.MustCompile(`/echo/(.+)`)
+
+	notFoundHandler = handler.NewNotFoundHandler()
+
+	r = router.NewRouter()
 )
+
+func init() {
+	r.NotFoundHandler(notFoundHandler)
+}
 
 func main() {
 	fmt.Println("Logs from your program will appear here!")
@@ -28,21 +40,16 @@ func main() {
 	}
 	defer conn.Close()
 
-	request := Request{}
+	request := request.NewHTTPRequest()
 	request.Read(conn)
 
-	response := Response{}
+	response, err := r.Handle(request)
 
-	if echoPathRegex.MatchString(request.Path()) {
-		results := echoPathRegex.FindStringSubmatch(request.Path())
-		response.StatusCode(200).ContentType("text/plain").Body([]byte(results[1]))
-	} else if request.Path() == "/" {
-		response.StatusCode(200)
-	} else {
-		response.StatusCode(404)
+	if err != nil {
+		fmt.Println("Error handling request: ", err.Error())
 	}
 
-	response.Write(conn)
+	err = response.Write(conn)
 
 	if err != nil {
 		fmt.Println("Error writing response: ", err.Error())
