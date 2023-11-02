@@ -12,7 +12,7 @@ type Echo struct {
 
 func (e *Echo) Handle(r port.Request) (port.Response, error) {
 	matches := e.matcher.FindMatches(r.Path())
-	response := response.NewPlainTextResponse()
+	response := response.NewTextPlainResponse()
 	response.StatusCode(200).Body([]byte(matches[0]))
 	return response, nil
 }
