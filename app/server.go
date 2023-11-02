@@ -11,8 +11,11 @@ import (
 )
 
 var (
+	echoMatcher = router.NewRegexMatcher(`/echo/(.+)`)
+
 	notFoundHandler = handler.NewNotFound()
 	homeHandler     = handler.NewHome()
+	echoHandler     = handler.NewEcho(echoMatcher)
 
 	r = router.NewRouter()
 )
@@ -20,7 +23,8 @@ var (
 func init() {
 	r.
 		NotFoundHandler(notFoundHandler).
-		Register(router.NewExactMatcher("/"), homeHandler)
+		Register(router.NewExactMatcher("/"), homeHandler).
+		Register(echoMatcher, echoHandler)
 }
 
 func main() {
