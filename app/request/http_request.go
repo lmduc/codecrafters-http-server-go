@@ -21,6 +21,7 @@ func (r *HTTPRequest) readStatusLine(data []byte) error {
 func (r *HTTPRequest) readHeaders(data []byte) error {
 	fmt.Println("inside read header")
 	r.headers = make(map[string]string)
+	fmt.Println("number: ", len(strings.Split(string(data), "\n\n")))
 	headerLines := strings.Split(string(data), "\n\n")[1]
 	fmt.Println("header lines: ", headerLines)
 	for _, line := range strings.Split(headerLines, "\n") {
