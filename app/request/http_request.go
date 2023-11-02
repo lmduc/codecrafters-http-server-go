@@ -1,7 +1,6 @@
 package request
 
 import (
-	"fmt"
 	"net"
 	"strings"
 )
@@ -14,22 +13,16 @@ type HTTPRequest struct {
 
 func (r *HTTPRequest) readStatusLine(data []byte) error {
 	r.statusLine = strings.Split(string(data), "\n")[0]
-	fmt.Println("status line: ", r.statusLine)
 	return nil
 }
 
 func (r *HTTPRequest) readHeaders(data []byte) error {
-	fmt.Println("inside read header")
 	r.headers = make(map[string]string)
-	fmt.Println("number: ", len(strings.Split(string(data), "\n\n")))
 	headerLines := strings.Split(string(data), "\n\n")[0]
-	fmt.Println("header lines: ", headerLines)
-	for _, line := range strings.Split(headerLines, "\n") {
-		fmt.Println("line: ", line)
+	for _, line := range strings.Split(headerLines, "\n")[1:] {
 		kvs := strings.Split(line, ": ")
 		r.headers[kvs[0]] = kvs[1]
 	}
-	fmt.Println("headers: ", r.headers)
 	return nil
 }
 
