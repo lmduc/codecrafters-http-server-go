@@ -1,6 +1,7 @@
 package request
 
 import (
+	"fmt"
 	"net"
 	"strings"
 )
@@ -20,6 +21,7 @@ func (r *HTTPRequest) readHeaders(data []byte) error {
 	r.headers = make(map[string]string)
 	headerLines := strings.Split(string(data), "\n\n")[0]
 	for _, line := range strings.Split(headerLines, "\n")[1:] {
+		fmt.Println("line: ", line)
 		kvs := strings.Split(line, ": ")
 		r.headers[kvs[0]] = kvs[1]
 	}
