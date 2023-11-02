@@ -1,6 +1,7 @@
 package request
 
 import (
+	"fmt"
 	"net"
 	"regexp"
 	"strings"
@@ -27,6 +28,7 @@ func (r *HTTPRequest) readHeaders(data []byte) error {
 	for _, line := range strings.Split(headerLines, "\n")[1:] {
 		if headerRegexp.MatchString(line) {
 			matches := headerRegexp.FindStringSubmatch(line)
+			fmt.Printf("%+v", matches)
 			if len(matches) == 3 {
 				r.headers[matches[1]] = matches[2]
 			}
