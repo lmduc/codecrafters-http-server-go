@@ -1,9 +1,13 @@
 package request
 
 import (
-	"fmt"
 	"net"
+	"regexp"
 	"strings"
+)
+
+var (
+	headerRegexp = regexp.MustCompile(`[^:]+:\s+([^\s]*)`)
 )
 
 type HTTPRequest struct {
@@ -21,10 +25,11 @@ func (r *HTTPRequest) readHeaders(data []byte) error {
 	r.headers = make(map[string]string)
 	headerLines := strings.Split(string(data), "\n\n")[0]
 	for _, line := range strings.Split(headerLines, "\n")[1:] {
-		kvs := strings.Split(line, ":")
-		if len(kvs) == 2 {
-			r.headers[kvs[0]] = kvs[1]
-			fmt.Println("value:", kvs[1])
+		if headerRegexp.MatchString(line) {
+			matches := headerRegexp.FindStringSubmatch(line)
+			if len(matches) == 3 {
+				r.headers[matches[1]] = matches[2]
+			}
 		}
 	}
 	return nil
