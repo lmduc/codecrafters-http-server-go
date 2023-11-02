@@ -16,7 +16,7 @@ func (r *Response) Write(conn net.Conn) error {
 	_, err := conn.Write(
 		[]byte(
 			fmt.Sprintf(
-				"HTTP/1.1 %d OK\r\n\r\nContent-Type: %s\r\nContent-Length: %d\r\n\r\n%s",
+				"HTTP/1.1 %d OK\r\nContent-Type: %s\r\nContent-Length: %d\r\n\r\n%s",
 				r.statusCode,
 				r.contentType,
 				r.contentLength,
