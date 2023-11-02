@@ -34,8 +34,8 @@ func main() {
 	response := Response{}
 
 	if echoPathRegex.MatchString(request.Path()) {
-		text := echoPathRegex.FindString(request.Path())
-		response.StatusCode(200).ContentType("text/plain").Body([]byte(text))
+		results := echoPathRegex.FindStringSubmatch(request.Path())
+		response.StatusCode(200).ContentType("text/plain").Body([]byte(results[1]))
 	} else if request.Path() == "/" {
 		response.StatusCode(200)
 	} else {
