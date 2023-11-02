@@ -64,5 +64,7 @@ func main() {
 			fmt.Println("Error writing response: ", err.Error())
 			os.Exit(1)
 		}
+
+		conn.Close()
 	}
 }
