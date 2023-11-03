@@ -25,7 +25,7 @@ func (r *HTTPRequest) parseRequest(data []byte) error {
 			break
 		}
 	}
-	fmt.Println("status line: ", r.statusLine)
+	fmt.Println("status line: ", string(r.statusLine))
 
 	r.headers = make(map[string]string)
 
@@ -42,7 +42,7 @@ func (r *HTTPRequest) parseRequest(data []byte) error {
 	if len(strings.Split(string(data), "\n\n")) > 1 {
 		r.body = []byte(strings.Split(string(data), "\n\n")[1])
 	}
-	fmt.Println("body :", r.body)
+	fmt.Println("body :", string(r.body))
 
 	return nil
 }
