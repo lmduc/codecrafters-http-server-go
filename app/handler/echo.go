@@ -7,7 +7,7 @@ import (
 )
 
 type Echo struct {
-	matcher *router.RegexMatcher
+	matcher *router.RegexPathMatcher
 }
 
 func (e *Echo) Handle(r port.Request) (port.Response, error) {
@@ -17,6 +17,6 @@ func (e *Echo) Handle(r port.Request) (port.Response, error) {
 	return response, nil
 }
 
-func NewEcho(matcher *router.RegexMatcher) *Echo {
+func NewEcho(matcher *router.RegexPathMatcher) *Echo {
 	return &Echo{matcher}
 }

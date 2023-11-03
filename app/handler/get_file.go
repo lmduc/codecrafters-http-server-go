@@ -12,7 +12,7 @@ import (
 
 type GetFile struct {
 	directory string
-	matcher   *router.RegexMatcher
+	matcher   *router.RegexPathMatcher
 }
 
 func (f *GetFile) exists(filePath string) bool {
@@ -36,7 +36,6 @@ func (f *GetFile) Handle(r port.Request) (port.Response, error) {
 	}
 
 	content, err := f.read(filePath)
-	fmt.Println("content: ", string(content))
 	if err != nil {
 		return nil, err
 	}
@@ -45,6 +44,6 @@ func (f *GetFile) Handle(r port.Request) (port.Response, error) {
 	return resp, nil
 }
 
-func NewGetFile(directory string, matcher *router.RegexMatcher) *GetFile {
+func NewGetFile(directory string, matcher *router.RegexPathMatcher) *GetFile {
 	return &GetFile{directory, matcher}
 }

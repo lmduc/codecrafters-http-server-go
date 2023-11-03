@@ -21,10 +21,26 @@ func (r *HTTPRequest) readStatusLine(data []byte) error {
 	return nil
 }
 
+func (r *HTTPRequest) readHeaderLinesAndBody(data []byte) ([]byte, []byte, error) {
+	for i := range data {
+		if i != 0 && data[i-1] == '\n' && data[i] == '\n' {
+			return data[:i-1], data[i+1:], nil
+		}
+	}
+	return data, nil, nil
+}
+
 func (r *HTTPRequest) readHeaders(data []byte) error {
 	r.headers = make(map[string]string)
-	headerLines := strings.Split(string(data), "\n\n")[0]
-	for _, line := range strings.Split(headerLines, "\n")[1:] {
+
+	headerLines, body, err := r.readHeaderLinesAndBody(data)
+	if err != nil {
+		return nil
+	}
+
+	r.body = body
+
+	for _, line := range strings.Split(string(headerLines), "\n")[1:] {
 		if headerRegexp.MatchString(line) {
 			matches := headerRegexp.FindStringSubmatch(line)
 			if len(matches) == 3 {
@@ -59,6 +75,10 @@ func (r *HTTPRequest) Path() string {
 
 func (r *HTTPRequest) Header(key string) string {
 	return r.headers[key]
+}
+
+func (r *HTTPRequest) Body() []byte {
+	return r.body
 }
 
 func NewHTTPRequest() *HTTPRequest { return &HTTPRequest{} }

@@ -5,13 +5,13 @@ import (
 )
 
 type Router struct {
-	pathToHandler   map[port.PathMatcher]port.Handler
+	routeToHandler  map[port.RouteMatcher]port.Handler
 	notFoundHandler port.Handler
 }
 
 func (r *Router) Handle(req port.Request) (port.Response, error) {
-	for pathMatcher, handler := range r.pathToHandler {
-		if pathMatcher.Match(req.Path()) {
+	for routeMatcher, handler := range r.routeToHandler {
+		if routeMatcher.Match(req) {
 			return handler.Handle(req)
 		}
 	}
@@ -19,8 +19,8 @@ func (r *Router) Handle(req port.Request) (port.Response, error) {
 	return r.notFoundHandler.Handle(req)
 }
 
-func (r *Router) Register(pathMatcher port.PathMatcher, handler port.Handler) *Router {
-	r.pathToHandler[pathMatcher] = handler
+func (r *Router) Register(routeMatcher port.RouteMatcher, handler port.Handler) *Router {
+	r.routeToHandler[routeMatcher] = handler
 	return r
 }
 
@@ -31,6 +31,6 @@ func (r *Router) NotFoundHandler(handler port.Handler) *Router {
 
 func NewRouter() *Router {
 	return &Router{
-		pathToHandler: make(map[port.PathMatcher]port.Handler),
+		routeToHandler: make(map[port.RouteMatcher]port.Handler),
 	}
 }

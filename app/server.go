@@ -16,21 +16,24 @@ var (
 )
 
 func prepareRouter(directory string) {
-	echoMatcher := router.NewRegexMatcher(`/echo/(.+)`)
-	fileMatcher := router.NewRegexMatcher(`/files/(.+)`)
+	echoMatcher := router.NewRegexPathMatcher("GET", `/echo/(.+)`)
+	getFileMatcher := router.NewRegexPathMatcher("GET", `/files/(.+)`)
+	postFileMatcher := router.NewRegexPathMatcher("POST", `/files/(.+)`)
 
 	notFoundHandler := handler.NewNotFound()
 	homeHandler := handler.NewHome()
 	echoHandler := handler.NewEcho(echoMatcher)
 	userAgentHandler := handler.NewUserAgent()
-	getFileHandler := handler.NewGetFile(directory, fileMatcher)
+	getFileHandler := handler.NewGetFile(directory, getFileMatcher)
+	postFileHandler := handler.NewPostFile(directory, postFileMatcher)
 
 	r.
 		NotFoundHandler(notFoundHandler).
-		Register(router.NewExactMatcher("/"), homeHandler).
+		Register(router.NewExactPathMatcher("/"), homeHandler).
 		Register(echoMatcher, echoHandler).
-		Register(router.NewExactMatcher("/user-agent"), userAgentHandler).
-		Register(fileMatcher, getFileHandler)
+		Register(router.NewExactPathMatcher("/user-agent"), userAgentHandler).
+		Register(getFileMatcher, getFileHandler).
+		Register(postFileMatcher, postFileHandler)
 }
 
 func main() {
