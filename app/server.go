@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"net"
 	"os"
@@ -11,25 +12,33 @@ import (
 )
 
 var (
-	echoMatcher = router.NewRegexMatcher(`/echo/(.+)`)
-
-	notFoundHandler  = handler.NewNotFound()
-	homeHandler      = handler.NewHome()
-	echoHandler      = handler.NewEcho(echoMatcher)
-	userAgentHandler = handler.NewUserAgent()
-
 	r = router.NewRouter()
 )
 
-func init() {
+func prepareRouter(directory string) {
+	echoMatcher := router.NewRegexMatcher(`/echo/(.+)`)
+	fileMatcher := router.NewRegexMatcher(`/file/(.+)`)
+
+	notFoundHandler := handler.NewNotFound()
+	homeHandler := handler.NewHome()
+	echoHandler := handler.NewEcho(echoMatcher)
+	userAgentHandler := handler.NewUserAgent()
+	fileHandler := handler.NewFile(directory, fileMatcher)
+
 	r.
 		NotFoundHandler(notFoundHandler).
 		Register(router.NewExactMatcher("/"), homeHandler).
 		Register(echoMatcher, echoHandler).
-		Register(router.NewExactMatcher("/user-agent"), userAgentHandler)
+		Register(router.NewExactMatcher("/user-agent"), userAgentHandler).
+		Register(fileMatcher, fileHandler)
 }
 
 func main() {
+	fileDirectory := flag.String("directory", "", "Path to the directory")
+	flag.Parse()
+
+	prepareRouter(*fileDirectory)
+
 	fmt.Println("Logs from your program will appear here!")
 
 	l, err := net.Listen("tcp", "0.0.0.0:4221")
@@ -43,6 +52,7 @@ func main() {
 		conn, err := l.Accept()
 		go func() {
 			defer conn.Close()
+
 			if err != nil {
 				fmt.Println("Error accepting connection: ", err.Error())
 				os.Exit(1)

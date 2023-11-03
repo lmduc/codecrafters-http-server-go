@@ -14,8 +14,9 @@ func (p *NotFound) Handle(_ port.Request) (port.Response, error) {
 }
 
 func NewNotFound() *NotFound {
-	resp := response.NewResponse("")
-	resp.StatusCode(404)
+	return &NotFound{notFoundResponse()}
+}
 
-	return &NotFound{resp}
+func notFoundResponse() *response.Response {
+	return response.NewResponse("").StatusCode(404)
 }
