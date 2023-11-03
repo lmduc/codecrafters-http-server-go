@@ -23,14 +23,14 @@ func prepareRouter(directory string) {
 	homeHandler := handler.NewHome()
 	echoHandler := handler.NewEcho(echoMatcher)
 	userAgentHandler := handler.NewUserAgent()
-	fileHandler := handler.NewFile(directory, fileMatcher)
+	getFileHandler := handler.NewGetFile(directory, fileMatcher)
 
 	r.
 		NotFoundHandler(notFoundHandler).
 		Register(router.NewExactMatcher("/"), homeHandler).
 		Register(echoMatcher, echoHandler).
 		Register(router.NewExactMatcher("/user-agent"), userAgentHandler).
-		Register(fileMatcher, fileHandler)
+		Register(fileMatcher, getFileHandler)
 }
 
 func main() {

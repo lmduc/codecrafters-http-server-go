@@ -10,12 +10,12 @@ import (
 	"github.com/codecrafters-io/http-server-starter-go/app/router"
 )
 
-type File struct {
+type GetFile struct {
 	directory string
 	matcher   *router.RegexMatcher
 }
 
-func (f *File) exists(filePath string) bool {
+func (f *GetFile) exists(filePath string) bool {
 	_, err := os.Stat(filePath)
 	if errors.Is(err, os.ErrNotExist) {
 		return false
@@ -23,11 +23,11 @@ func (f *File) exists(filePath string) bool {
 	return true
 }
 
-func (f *File) read(filePath string) ([]byte, error) {
+func (f *GetFile) read(filePath string) ([]byte, error) {
 	return os.ReadFile(filePath)
 }
 
-func (f *File) Handle(r port.Request) (port.Response, error) {
+func (f *GetFile) Handle(r port.Request) (port.Response, error) {
 	fileName := f.matcher.FindMatches(r.Path())[1]
 	filePath := fmt.Sprintf("%s%s", f.directory, fileName)
 
@@ -45,6 +45,6 @@ func (f *File) Handle(r port.Request) (port.Response, error) {
 	return resp, nil
 }
 
-func NewFile(directory string, matcher *router.RegexMatcher) *File {
-	return &File{directory, matcher}
+func NewGetFile(directory string, matcher *router.RegexMatcher) *GetFile {
+	return &GetFile{directory, matcher}
 }
