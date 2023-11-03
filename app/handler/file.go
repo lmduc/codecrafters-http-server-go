@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -14,7 +15,11 @@ type File struct {
 	matcher   *router.RegexMatcher
 }
 
-func (f *File) exists(path string) bool {
+func (f *File) exists(filePath string) bool {
+	_, err := os.Stat(filePath)
+	if errors.Is(err, os.ErrNotExist) {
+		return false
+	}
 	return true
 }
 
@@ -24,12 +29,10 @@ func (f *File) read(filePath string) ([]byte, error) {
 
 func (f *File) Handle(r port.Request) (port.Response, error) {
 	fileName := f.matcher.FindMatches(r.Path())[1]
-	fmt.Println("file name: ", fileName)
 	filePath := fmt.Sprintf("%s%s", f.directory, fileName)
-	fmt.Println("file path: ", filePath)
 
 	if !f.exists(filePath) {
-		return response.NewResponse("").StatusCode(404), nil
+		return notFoundResponse(), nil
 	}
 
 	content, err := f.read(filePath)
