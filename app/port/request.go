@@ -7,4 +7,5 @@ type Request interface {
 	Path() string
 	Header(string) string
 	Body() []byte
+	Verb() string
 }

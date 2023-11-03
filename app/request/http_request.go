@@ -81,4 +81,8 @@ func (r *HTTPRequest) Body() []byte {
 	return r.body
 }
 
+func (r *HTTPRequest) Verb() string {
+	return strings.Split(r.statusLine, " ")[0]
+}
+
 func NewHTTPRequest() *HTTPRequest { return &HTTPRequest{} }

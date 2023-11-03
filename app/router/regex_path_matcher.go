@@ -12,7 +12,7 @@ type RegexPathMatcher struct {
 }
 
 func (r *RegexPathMatcher) Match(req port.Request) bool {
-	return r.r.MatchString(req.Path())
+	return req.Verb() == r.verb && r.r.MatchString(req.Path())
 }
 
 func (r *RegexPathMatcher) FindMatches(path string) []string {
