@@ -23,9 +23,9 @@ func (f *File) read(filePath string) ([]byte, error) {
 }
 
 func (f *File) Handle(r port.Request) (port.Response, error) {
-	fileName := f.matcher.FindMatches(r.Path())
+	fileName := f.matcher.FindMatches(r.Path())[1]
 	fmt.Println("file name: ", fileName)
-	filePath := fmt.Sprintf("%s/%s", f.directory, fileName)
+	filePath := fmt.Sprintf("%s%s", f.directory, fileName)
 	fmt.Println("file path: ", filePath)
 
 	if !f.exists(filePath) {
