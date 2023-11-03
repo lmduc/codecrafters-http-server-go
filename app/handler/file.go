@@ -24,13 +24,16 @@ func (f *File) read(filePath string) ([]byte, error) {
 
 func (f *File) Handle(r port.Request) (port.Response, error) {
 	fileName := f.matcher.FindMatches(r.Path())
+	fmt.Println("file name: ", fileName)
 	filePath := fmt.Sprintf("%s/%s", f.directory, fileName)
+	fmt.Println("file path: ", filePath)
 
 	if !f.exists(filePath) {
 		return response.NewResponse("").StatusCode(404), nil
 	}
 
 	content, err := f.read(filePath)
+	fmt.Println("content: ", string(content))
 	if err != nil {
 		return nil, err
 	}
