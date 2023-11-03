@@ -17,7 +17,7 @@ var (
 
 func prepareRouter(directory string) {
 	echoMatcher := router.NewRegexMatcher(`/echo/(.+)`)
-	fileMatcher := router.NewRegexMatcher(`/file/(.+)`)
+	fileMatcher := router.NewRegexMatcher(`/files/(.+)`)
 
 	notFoundHandler := handler.NewNotFound()
 	homeHandler := handler.NewHome()
