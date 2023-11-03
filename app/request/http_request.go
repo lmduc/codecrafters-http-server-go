@@ -19,7 +19,7 @@ type HTTPRequest struct {
 
 func (r *HTTPRequest) parseRequest(data []byte) error {
 	for i := range data {
-		if i == '\n' {
+		if data[i] == '\n' {
 			r.statusLine = data[:i]
 			data = data[i+1:]
 			break
