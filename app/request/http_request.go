@@ -1,6 +1,7 @@
 package request
 
 import (
+	"fmt"
 	"net"
 	"regexp"
 	"strings"
@@ -11,35 +12,24 @@ var (
 )
 
 type HTTPRequest struct {
-	body       []byte
-	statusLine string
+	statusLine []byte
 	headers    map[string]string
+	body       []byte
 }
 
-func (r *HTTPRequest) readStatusLine(data []byte) error {
-	r.statusLine = strings.Split(string(data), "\n")[0]
-	return nil
-}
-
-func (r *HTTPRequest) readHeaderLinesAndBody(data []byte) ([]byte, []byte, error) {
+func (r *HTTPRequest) parseRequest(data []byte) error {
 	for i := range data {
-		if i != 0 && data[i-1] == '\n' && data[i] == '\n' {
-			return data[:i-1], data[i+1:], nil
+		if i == '\n' {
+			r.statusLine = data[:i]
+			data = data[i+1:]
+			break
 		}
 	}
-	return data, nil, nil
-}
+	fmt.Println("status line: ", r.statusLine)
 
-func (r *HTTPRequest) readHeaders(data []byte) error {
 	r.headers = make(map[string]string)
 
-	headerLines, body, err := r.readHeaderLinesAndBody(data)
-	if err != nil {
-		return nil
-	}
-
-	r.body = body
-
+	headerLines := strings.Split(string(data), "\n\n")[0]
 	for _, line := range strings.Split(string(headerLines), "\n")[1:] {
 		if headerRegexp.MatchString(line) {
 			matches := headerRegexp.FindStringSubmatch(line)
@@ -48,6 +38,12 @@ func (r *HTTPRequest) readHeaders(data []byte) error {
 			}
 		}
 	}
+
+	if len(strings.Split(string(data), "\n\n")) > 1 {
+		r.body = []byte(strings.Split(string(data), "\n\n")[1])
+	}
+	fmt.Println("body :", r.body)
+
 	return nil
 }
 
@@ -57,11 +53,7 @@ func (r *HTTPRequest) Read(conn net.Conn) error {
 		return err
 	}
 
-	if err := r.readStatusLine(data); err != nil {
-		return err
-	}
-
-	if err := r.readHeaders(data); err != nil {
+	if err := r.parseRequest(data); err != nil {
 		return err
 	}
 
@@ -69,7 +61,7 @@ func (r *HTTPRequest) Read(conn net.Conn) error {
 }
 
 func (r *HTTPRequest) Path() string {
-	path := strings.Split(r.statusLine, " ")[1]
+	path := strings.Split(string(r.statusLine), " ")[1]
 	return path
 }
 
@@ -82,7 +74,7 @@ func (r *HTTPRequest) Body() []byte {
 }
 
 func (r *HTTPRequest) Verb() string {
-	return strings.Split(r.statusLine, " ")[0]
+	return strings.Split(string(r.statusLine), " ")[0]
 }
 
 func NewHTTPRequest() *HTTPRequest { return &HTTPRequest{} }

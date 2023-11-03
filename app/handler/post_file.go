@@ -19,9 +19,11 @@ func (f *PostFile) write(filePath string, content []byte) error {
 }
 
 func (f *PostFile) Handle(r port.Request) (port.Response, error) {
+	fmt.Println("inside post")
 	fileName := f.matcher.FindMatches(r.Path())[1]
 	filePath := fmt.Sprintf("%s%s", f.directory, fileName)
 
+	fmt.Println("body: ", r.Body())
 	err := f.write(filePath, r.Body())
 	if err != nil {
 		return nil, err
