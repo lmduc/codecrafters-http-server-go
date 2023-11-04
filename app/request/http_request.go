@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -12,39 +13,39 @@ var (
 )
 
 type HTTPRequest struct {
-	statusLine []byte
+	statusLine string
 	headers    map[string]string
 	body       []byte
 }
 
 func (r *HTTPRequest) parseRequest(data []byte) error {
-	for i := range data {
-		if data[i] == '\n' {
-			r.statusLine = data[:i]
-			data = data[i+1:]
-			break
-		}
-	}
-	fmt.Println("data", string(data))
-
-	var headerLines []byte
 	parts := strings.SplitN(string(data), "\r\n\r\n", 2)
 	if len(parts) < 2 {
 		return fmt.Errorf("malformed request")
 	}
 
-	headerLines, r.body = []byte(parts[0]), []byte(parts[1])
+	heads := strings.SplitN(parts[0], "\r\n", 2)
+	r.statusLine = heads[0]
+	headerLines := heads[1]
 
 	r.headers = make(map[string]string)
 
-	for _, line := range strings.Split(string(headerLines), "\n") {
+	for _, line := range strings.Split(headerLines, "\n") {
 		if headerRegexp.MatchString(line) {
 			matches := headerRegexp.FindStringSubmatch(line)
 			r.headers[matches[1]] = matches[2]
 		}
 	}
 
-	fmt.Println("body :", string(r.body))
+	r.body = []byte(parts[1])
+	if r.headers["Content-Length"] != "" {
+		bodyLength, err := strconv.Atoi(r.headers["Content-Length"])
+		if err != nil {
+			return err
+		}
+
+		r.body = r.body[:bodyLength]
+	}
 
 	return nil
 }
@@ -63,7 +64,7 @@ func (r *HTTPRequest) Read(conn net.Conn) error {
 }
 
 func (r *HTTPRequest) Path() string {
-	path := strings.Split(string(r.statusLine), " ")[1]
+	path := strings.Split(r.statusLine, " ")[1]
 	return path
 }
 
@@ -76,7 +77,7 @@ func (r *HTTPRequest) Body() []byte {
 }
 
 func (r *HTTPRequest) Verb() string {
-	return strings.Split(string(r.statusLine), " ")[0]
+	return strings.Split(r.statusLine, " ")[0]
 }
 
 func NewHTTPRequest() *HTTPRequest { return &HTTPRequest{} }
