@@ -31,11 +31,13 @@ func (r *HTTPRequest) parseRequest(data []byte) error {
 	for i := range data {
 		if i > 0 && data[i-1] == '\n' && data[i] == '\n' {
 			headerLines = data[:i-1]
-			data = data[i+1:]
+			r.body = data[i+1:]
 			break
+		} else if i == len(data)-1 {
+			headerLines = data
+			r.body = nil
 		}
 	}
-	r.body = data
 
 	r.headers = make(map[string]string)
 
