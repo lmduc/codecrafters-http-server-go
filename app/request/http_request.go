@@ -31,8 +31,6 @@ func (r *HTTPRequest) parseRequest(data []byte) error {
 	if len(heads) == 2 {
 		headerLines = heads[1]
 	}
-	fmt.Println("status line: ", r.statusLine)
-	fmt.Println("header lines: ", headerLines)
 
 	r.headers = make(map[string]string)
 
