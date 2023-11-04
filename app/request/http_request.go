@@ -30,6 +30,7 @@ func (r *HTTPRequest) parseRequest(data []byte) error {
 	var headerLines []byte
 	for i := range data {
 		if i > 0 && data[i-1] == '\n' && data[i] == '\n' {
+			fmt.Println("actually inside: ", string(data), i)
 			headerLines = data[:i-1]
 			r.body = data[i+1:]
 			break
