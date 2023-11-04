@@ -28,12 +28,12 @@ func (r *HTTPRequest) parseRequest(data []byte) error {
 	fmt.Println("data", string(data))
 
 	var headerLines []byte
-	index := strings.Index(string(data), "\r\n\r\n")
-	if index != -1 {
-		headerLines, r.body = data[:index], data[index+2:]
-	} else {
-		headerLines, r.body = data, nil
+	parts := strings.SplitN(string(data), "\r\n\r\n", 2)
+	if len(parts) < 2 {
+		return fmt.Errorf("malformed request")
 	}
+
+	headerLines, r.body = []byte(parts[0]), []byte(parts[1])
 
 	r.headers = make(map[string]string)
 
