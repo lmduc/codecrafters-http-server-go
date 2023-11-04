@@ -25,7 +25,7 @@ func (r *HTTPRequest) parseRequest(data []byte) error {
 			break
 		}
 	}
-	fmt.Println("status line: ", string(r.statusLine))
+	fmt.Println("data", string(data))
 
 	var headerLines []byte
 	index := strings.Index(string(data), "\n\n")
