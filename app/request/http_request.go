@@ -27,15 +27,22 @@ func (r *HTTPRequest) parseRequest(data []byte) error {
 	}
 	fmt.Println("status line: ", string(r.statusLine))
 
+	var headerLines []byte
+	for i := range data {
+		if i > 0 && data[i-1] == '\n' && data[i] == '\n' {
+			headerLines = data[:i-1]
+			data = data[i+1:]
+			break
+		}
+	}
+	r.body = data
+
 	r.headers = make(map[string]string)
 
-	headerLines := strings.Split(string(data), "\n\n")[0]
-	for _, line := range strings.Split(string(headerLines), "\n")[1:] {
+	for _, line := range strings.Split(string(headerLines), "\n") {
 		if headerRegexp.MatchString(line) {
 			matches := headerRegexp.FindStringSubmatch(line)
-			if len(matches) == 3 {
-				r.headers[matches[1]] = matches[2]
-			}
+			r.headers[matches[1]] = matches[2]
 		}
 	}
 
