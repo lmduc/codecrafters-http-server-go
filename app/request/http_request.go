@@ -26,7 +26,11 @@ func (r *HTTPRequest) parseRequest(data []byte) error {
 
 	heads := strings.SplitN(parts[0], "\r\n", 2)
 	r.statusLine = heads[0]
-	headerLines := heads[1]
+
+	headerLines := ""
+	if len(heads) == 2 {
+		headerLines = heads[1]
+	}
 	fmt.Println("status line: ", r.statusLine)
 	fmt.Println("header lines: ", headerLines)
 
