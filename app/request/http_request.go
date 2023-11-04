@@ -28,7 +28,7 @@ func (r *HTTPRequest) parseRequest(data []byte) error {
 	fmt.Println("data", string(data))
 
 	var headerLines []byte
-	index := strings.Index(string(data), "\n\n")
+	index := strings.Index(string(data), "\r\n\r\n")
 	if index != -1 {
 		headerLines, r.body = data[:index], data[index+2:]
 	} else {
